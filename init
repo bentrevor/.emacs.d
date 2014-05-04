@@ -1,3 +1,7 @@
 #!/bin/bash
 
+if [ -e ~/.emacs ]; then
+  mv ~/.emacs ~/.emacs.old
+fi
+
 ln -s ~/.emacs.d/.emacs ~/.emacs
