@@ -3,7 +3,10 @@
   (require 'package)
   (package-initialize)
 
+  ;
   ; settings
+  ;
+  (projectile-global-mode) ; like command-t
   (add-to-list 'package-archives       '("melpa" . "http://melpa.milkbox.net/packages/") t)
   (add-to-list 'auto-mode-alist        '("\\.rb$" . ruby-mode))
   (add-to-list 'interpreter-mode-alist '("ruby" . ruby-mode))
@@ -34,9 +37,16 @@
 
   (load-theme 'ample t)
 
-  (ido-mode t)
-  (setq ido-enable-flex-matching t)
-  (setq ido-create-new-buffer 'always)
+  (require 'smex)
+  (smex-initialize)
+  (global-set-key (kbd "M-x") 'smex)
+
+  (require 'flx-ido)
+  (ido-mode 1)
+  (ido-everywhere 1)
+  (flx-ido-mode 1)
+;   (setq ido-enable-flex-matching t)
+;   (setq ido-create-new-buffer 'always)
 
   (menu-bar-mode -1)
   (when (fboundp 'tool-bar-mode)
@@ -44,10 +54,14 @@
   (when (fboundp 'scroll-bar-mode)
     (scroll-bar-mode -1))
 
+  ;
   ; org mode options
-
+  ;
   (require 'org)
+  (setq org-agenda-files (quote ("~/org/todo.org"
+                                 "~/org/projects.org")))
   (setq org-startup-indented t)
+  (setq org-columns-default-format "%80ITEM(Task) %10Effort(Effort){:} %10CLOCKSUM")
   (setq org-todo-keywords
         (quote ((sequence "TODO(t)" "NEXT(n)" "BLOCKED(b)" "|" "DONE(d)" "SKIP(s)"))))
 
@@ -61,6 +75,12 @@
   (global-set-key (kbd "C-c t") 'org-todo)
   (global-set-key (kbd "C-c a") 'org-agenda)
 
+  ; disable line numbers in org mode
+  (add-hook 'org-mode-hook (lambda () (global-linum-mode 0)))
+
+  ;
+  ; options for packages
+  ;
   (require 'expand-region)
   (global-set-key (kbd "M-s i") 'er/expand-region)
 
@@ -73,15 +93,18 @@
   (require 'whole-line-or-region)
   (whole-line-or-region-mode)
 
+  ;
   ; clojure indent options
+  ;
   (add-hook 'clojure-mode-hook
 	    (lambda ()
 	      (put-clojure-indent 'describe 'defun)
 	      (put-clojure-indent 'it       'defun)
 	      (put-clojure-indent 'with     'defun)))
 
+  ;
   ; keybindings
-
+  ;
   (global-set-key (kbd "M-/")     'hippie-expand)
   (global-set-key (kbd "C-x C-b") 'ibuffer)
   (global-set-key (kbd "C-s")     'isearch-forward-regexp)
@@ -91,7 +114,6 @@
   (global-set-key (kbd "M-n")     'scroll-up-line)
   (global-set-key (kbd "M-p")     'scroll-down-line)
   (global-set-key (kbd "M-z")     'zap-up-to-char)
-  (global-set-key (kbd "C-x M-f") 'find-file-in-project)
   (global-set-key (kbd "C-x r i") 'string-insert-rectangle)
   (global-set-key (kbd "C-x a r") 'align-regexp)
 
@@ -102,6 +124,11 @@
     (call-interactively 'indent-region))
 
   (global-set-key (kbd "\C-y") 'yank-and-indent)
+
+  (defun dotfile ()
+    "Opens ~/.emacs"
+    (interactive)
+    (find-file "~/.emacs.d/.emacs"))
 
   (define-key global-map (kbd "RET") 'newline-and-indent))
 
