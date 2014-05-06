@@ -6,7 +6,6 @@
   ;
   ; settings
   ;
-  (projectile-global-mode) ; like command-t
   (add-to-list 'package-archives       '("melpa" . "http://melpa.milkbox.net/packages/") t)
   (add-to-list 'auto-mode-alist        '("\\.rb$" . ruby-mode))
   (add-to-list 'interpreter-mode-alist '("ruby" . ruby-mode))
@@ -41,12 +40,14 @@
   (smex-initialize)
   (global-set-key (kbd "M-x") 'smex)
 
+  (projectile-global-mode) ; like command-t
+
   (require 'flx-ido)
   (ido-mode 1)
   (ido-everywhere 1)
   (flx-ido-mode 1)
-;   (setq ido-enable-flex-matching t)
-;   (setq ido-create-new-buffer 'always)
+  (setq ido-create-new-buffer 'always)
+  (setq projectile-completion-system 'ido)
 
   (menu-bar-mode -1)
   (when (fboundp 'tool-bar-mode)
@@ -116,6 +117,10 @@
   (global-set-key (kbd "M-z")     'zap-up-to-char)
   (global-set-key (kbd "C-x r i") 'string-insert-rectangle)
   (global-set-key (kbd "C-x a r") 'align-regexp)
+  (global-set-key (kbd "C-x f")   'projectile-find-file)
+  (global-set-key (kbd "C-x C-f") 'projectile-find-file)
+  (global-set-key (kbd "M-.")     'forward-paragraph)
+  (global-set-key (kbd "M-,")     'backward-paragraph)
 
   (defun yank-and-indent ()
     "Yank with correct indentation."
