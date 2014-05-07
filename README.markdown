@@ -1,3 +1,3 @@
 ## Instructions
 
-Go to your home directory and clone the repo.  Then run `./init` to symlink the `.emacs` file.
+Clone the repo in your home directory.  Emacs will find the `~/.emacs.d/init.el` file.

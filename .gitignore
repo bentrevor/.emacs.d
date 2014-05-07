@@ -64,3 +64,6 @@ url/
 
 # emacs-request cookies directory
 request/
+
+# my stuff
+org-mode-options.el
