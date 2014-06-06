@@ -13,6 +13,7 @@
 (global-set-key (kbd "C-x a r") 'align-regexp)
 (global-set-key (kbd "C-x f")   'projectile-find-file)
 (global-set-key (kbd "C-x C-f") 'projectile-find-file)
+(global-set-key (kbd "C-x M-f") 'find-file)
 (global-set-key (kbd "M-.")     'forward-paragraph)
 (global-set-key (kbd "M-,")     'backward-paragraph)
 (global-set-key (kbd "M-;")     'whole-line-or-region-comment-dwim)
