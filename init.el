@@ -44,6 +44,7 @@
   (add-to-list 'auto-mode-alist '("Vagrantfile$" . ruby-mode))
 
   (add-to-list 'auto-mode-alist '("zshrc" . shell-script-mode))
+  (add-to-list 'auto-mode-alist '("\\.zsh$" . shell-script-mode))
 
 
   ; line number options
@@ -56,11 +57,23 @@
 
   (load-theme 'ample t)
 
+  ;
+  ; options for packages
+  ;
   (require 'smex)
   (smex-initialize)
   (global-set-key (kbd "M-x") 'smex)
 
   (projectile-global-mode) ; like command-t
+
+  (autoload 'enable-paredit-mode "paredit" "Turn on pseudo-structural editing of Lisp code." t)
+  (add-hook 'emacs-lisp-mode-hook                  #'enable-paredit-mode)
+  (add-hook 'eval-expression-minibuffer-setup-hook #'enable-paredit-mode)
+  (add-hook 'ielm-mode-hook                        #'enable-paredit-mode)
+  (add-hook 'lisp-mode-hook                        #'enable-paredit-mode)
+  (add-hook 'lisp-interaction-mode-hook            #'enable-paredit-mode)
+  (add-hook 'scheme-mode-hook                      #'enable-paredit-mode)
+  (add-hook 'clojure-mode-hook                     #'enable-paredit-mode)
 
   (require 'flx-ido)
   (ido-mode 1)
@@ -77,9 +90,6 @@
   (when (fboundp 'scroll-bar-mode)
     (scroll-bar-mode -1))
 
-  ;
-  ; options for packages
-  ;
   (require 'expand-region)
   (global-set-key (kbd "M-s i") 'er/expand-region)
 
