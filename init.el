@@ -75,6 +75,13 @@
   (add-hook 'scheme-mode-hook                      #'enable-paredit-mode)
   (add-hook 'clojure-mode-hook                     #'enable-paredit-mode)
 
+  (add-hook 'paredit-mode-hook (lambda ()
+                                 (global-set-key (kbd "C-c s") 'paredit-backward-slurp-sexp)
+                                 (global-set-key (kbd "C-c C-s") 'paredit-forward-slurp-sexp)
+                                 (global-set-key (kbd "C-c b") 'paredit-backward-barf-sexp)
+                                 (global-set-key (kbd "C-c C-b") 'paredit-forward-barf-sexp)
+                                 ))
+
   (require 'flx-ido)
   (ido-mode 1)
   (ido-everywhere 1)
@@ -103,13 +110,19 @@
   (whole-line-or-region-mode)
 
   ;
-  ; clojure indent options
+  ; hooks
   ;
   (add-hook 'clojure-mode-hook
 	    (lambda ()
 	      (put-clojure-indent 'describe 'defun)
 	      (put-clojure-indent 'it       'defun)
 	      (put-clojure-indent 'with     'defun)))
+
+  (add-hook 'haskell-mode-hook 'haskell-indent-mode)
+
+  ;; (add-hook 'ido-mode-hook
+  ;;           (lambda ()
+  ;;             (global-set-key (kbd "C-j") 'ido-exit-minibuffer)))
 
   (load "~/.emacs.d/keybindings.el")
   (load "~/.emacs.d/org-mode-options.el"))
