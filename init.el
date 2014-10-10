@@ -10,6 +10,8 @@
   (add-to-list 'auto-mode-alist        '("\\.rb$" . ruby-mode))
   (add-to-list 'interpreter-mode-alist '("ruby" . ruby-mode))
   (add-hook 'before-save-hook 'delete-trailing-whitespace)
+  (add-hook 'prog-mode-hook 'highlight-numbers-mode)
+  ; (add-hook 'prog-mode-hook 'highlight-escape-sequences)
 
   (setq x-select-enable-clipboard            t
         x-select-enable-primary              t
@@ -30,6 +32,7 @@
   (setq-default scss-compile-at-save nil)                 ; don't try to compile scss files
   (setq-default auto-compression-mode 0)                  ; don't try to decompress files (like ~/.z)
   (setq-default fill-column 80)                           ; text width for fill-paragraph
+  (column-number-mode t)
 
 
   (autoload 'zap-up-to-char "misc" "like 't' in vim" 'interactive)
@@ -75,11 +78,20 @@
   (add-hook 'scheme-mode-hook                      #'enable-paredit-mode)
   (add-hook 'clojure-mode-hook                     #'enable-paredit-mode)
 
+  (font-lock-add-keywords 'scheme-mode
+                          '(("car " . font-lock-builtin-face)
+                            ("cdr " . font-lock-builtin-face)
+                            ("cons " . font-lock-builtin-face)
+                            ))
+
+  (put 'if 'scheme-indent-function 3)
+
   (add-hook 'paredit-mode-hook (lambda ()
                                  (global-set-key (kbd "C-c s") 'paredit-backward-slurp-sexp)
                                  (global-set-key (kbd "C-c C-s") 'paredit-forward-slurp-sexp)
                                  (global-set-key (kbd "C-c b") 'paredit-backward-barf-sexp)
                                  (global-set-key (kbd "C-c C-b") 'paredit-forward-barf-sexp)
+                                 (global-paren-face-mode t)
                                  ))
 
   (require 'flx-ido)
@@ -118,7 +130,7 @@
 	      (put-clojure-indent 'it       'defun)
 	      (put-clojure-indent 'with     'defun)))
 
-  (add-hook 'haskell-mode-hook 'haskell-indent-mode)
+  (add-hook 'haskell-mode-hook 'haskell-indentation-mode)
 
   ;; (add-hook 'ido-mode-hook
   ;;           (lambda ()
