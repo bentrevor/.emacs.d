@@ -77,6 +77,8 @@
   (add-hook 'lisp-interaction-mode-hook            #'enable-paredit-mode)
   (add-hook 'scheme-mode-hook                      #'enable-paredit-mode)
   (add-hook 'clojure-mode-hook                     #'enable-paredit-mode)
+  (add-hook 'racket-mode-hook                      #'enable-paredit-mode)
+  (setq racket-mode-pretty-lambda nil) ;; prevents emacs from showing 'lambda' as 'λ'
 
   (font-lock-add-keywords 'scheme-mode
                           '(("car " . font-lock-builtin-face)
