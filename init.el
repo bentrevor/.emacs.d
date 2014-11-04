@@ -32,7 +32,11 @@
   (setq-default scss-compile-at-save nil)                 ; don't try to compile scss files
   (setq-default auto-compression-mode 0)                  ; don't try to decompress files (like ~/.z)
   (setq-default fill-column 80)                           ; text width for fill-paragraph
+  (setq-default comment-column 0)                         ; stop moving comments to the right
   (column-number-mode t)
+
+  (setq erc-hide-list '("JOIN" "PART" "QUIT")) ; don't show "xxx joined the channel"
+  (setq erc-input-line-position -2)  ; supposed to keep newest message at bottom of buffer, but it's not working...
 
 
   (autoload 'zap-up-to-char "misc" "like 't' in vim" 'interactive)
@@ -49,6 +53,7 @@
   (add-to-list 'auto-mode-alist '("zshrc" . shell-script-mode))
   (add-to-list 'auto-mode-alist '("\\.zsh$" . shell-script-mode))
 
+  (add-to-list 'auto-mode-alist '("\\.hdl$" . c-mode))
 
   ; line number options
   (global-linum-mode t)
@@ -100,6 +105,13 @@
   (ido-mode 1)
   (ido-everywhere 1)
   (flx-ido-mode 1)
+  ; vertical minibuffer
+  (setq ido-decorations (quote ("\n-> " "" "\n   " "\n   ..." "[" "]" " [No match]" " [Matched]" " [Not readable]" " [Too big]" " [Confirm]")))
+  (add-hook 'ido-minibuffer-setup-hook (lambda ()
+                                         (set (make-local-variable 'truncate-lines) nil)))
+  (add-hook 'ido-setup-hook (lambda ()
+                              (define-key ido-completion-map (kbd "C-n") 'ido-next-match)
+                              (define-key ido-completion-map (kbd "C-p") 'ido-prev-match)))
   (setq ido-create-new-buffer 'always)
   (setq projectile-completion-system 'ido)
   (setq projectile-require-project-root nil)
@@ -134,6 +146,8 @@
 
   (add-hook 'haskell-mode-hook 'haskell-indentation-mode)
 
+  (add-hook 'erc-mode-hook '(lambda () (setq scroll-conservatively 100)))
+
   ;; (add-hook 'ido-mode-hook
   ;;           (lambda ()
   ;;             (global-set-key (kbd "C-j") 'ido-exit-minibuffer)))
@@ -148,6 +162,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(custom-safe-themes (quote ("c6faf8734bd04d303d9a272daef7a1c37a85597e2de3c006a4319ecf579821a0" "a774c5551bc56d7a9c362dca4d73a374582caedb110c201a09b410c0ebbb5e70" "90b5269aefee2c5f4029a6a039fb53803725af6f5c96036dee5dc029ff4dff60" "ce79400f46bd76bebeba655465f9eadf60c477bd671cbcd091fe871d58002a88" "9bcb8ee9ea34ec21272bb6a2044016902ad18646bd09fdd65abae1264d258d89" "bf648fd77561aae6722f3d53965a9eb29b08658ed045207fe32ffed90433eb52" "7d4d00a2c2a4bba551fcab9bfd9186abe5bfa986080947c2b99ef0b4081cb2a6" "c7359bd375132044fe993562dfa736ae79efc620f68bab36bd686430c980df1c" default)))
+ '(erc-modules (quote (autojoin button completion fill irccontrols list match menu move-to-prompt netsplit networks noncommands readonly ring scrolltobottom stamp track)))
  '(safe-local-variable-values (quote ((encoding . utf-8)))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
