@@ -41,6 +41,7 @@
 
   (autoload 'zap-up-to-char "misc" "like 't' in vim" 'interactive)
   (autoload 'ruby-mode "ruby-mode" "Major mode for ruby files" t)
+  (autoload 'nimrod-mode "nimrod-mode" "Major mode for nim files" t)
 
   (add-to-list 'auto-mode-alist '("Gemfile$" . ruby-mode))
   (add-to-list 'auto-mode-alist '("\\.rake$" . ruby-mode))
@@ -53,7 +54,10 @@
   (add-to-list 'auto-mode-alist '("zshrc" . shell-script-mode))
   (add-to-list 'auto-mode-alist '("\\.zsh$" . shell-script-mode))
 
+  ; for nand2tetris
   (add-to-list 'auto-mode-alist '("\\.hdl$" . c-mode))
+
+  (add-to-list 'auto-mode-alist '("\\.nim$" . nimrod-mode))
 
   ; line number options
   (global-linum-mode t)
@@ -125,6 +129,7 @@
 
   (require 'expand-region)
   (global-set-key (kbd "M-s i") 'er/expand-region)
+  (global-set-key (kbd "M-s M-i") 'er/expand-region)
 
   (require 'uniquify)
   (setq uniquify-buffer-name-style 'forward)

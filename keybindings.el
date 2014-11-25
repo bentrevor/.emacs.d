@@ -19,6 +19,7 @@
 (global-set-key (kbd "M-,")     'backward-paragraph)
 (global-set-key (kbd "M-;")     'whole-line-or-region-comment-dwim)
 (global-set-key (kbd "M-o M-o") 'browse-url-at-point)
+(global-set-key (kbd "C-x C-o") 'other-window)
 
 (defun join-line-below ()
   "Like 'J' in vim."
@@ -27,6 +28,34 @@
   (delete-indentation))
 
 (global-set-key (kbd "M-j") 'join-line-below)
+
+;; (defun find-word-at-point ()
+;;   "Like '*' in vim."
+;;   (interactive)
+;;   (backward-word)
+;;   (isearch-forward-regexp)
+;;   (isearch-yank-word-or-char)
+;; )
+
+(defun pry-rescue ()
+  "Wrap the current line in a begin block that rescues with pry"
+  (interactive)
+  (move-beginning-of-line)
+  (open-line)
+  (indent-for-tab-command)
+  (insert "begin")
+  (next-line)
+  (next-line)
+  (move-beginning-of-line)
+  (open-line)
+  (indent-for-tab-command)
+  (insert "rescue")
+  (newline-and-indent)
+  (insert "binding.pry")
+  (newline-and-indent)
+  (insert "end"))
+
+(global-set-key (kbd "M-*") 'find-word-at-point)
 
 (defun yank-and-indent ()
   "Yank with correct indentation."
