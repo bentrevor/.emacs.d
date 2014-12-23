@@ -24,6 +24,7 @@
   (setq backup-directory-alist `(("." . "~/.saves")))     ; save backups in separate directory
   (setq-default indent-tabs-mode nil)                     ; use spaces instead of tabs
   (setq-default coffee-tab-width 2)                       ; coffee mode tab width
+  (setq-default c-basic-offset 8)                         ; coffee mode tab width
   (show-paren-mode 1)                                     ; highlight matching parens
   (fset 'yes-or-no-p 'y-or-n-p)                           ; faster prompts
   (setq confirm-nonexistent-file-or-buffer nil)           ; don't prompt to create a new file
@@ -152,6 +153,11 @@
   (add-hook 'haskell-mode-hook 'haskell-indentation-mode)
 
   (add-hook 'erc-mode-hook '(lambda () (setq scroll-conservatively 100)))
+
+  (add-hook 'go-mode-hook
+            (lambda ()
+              (setq gofmt-command "goimports")  ; use goimports instead of go-fmt
+              (add-hook 'before-save-hook 'gofmt-before-save)))
 
   ;; (add-hook 'ido-mode-hook
   ;;           (lambda ()
