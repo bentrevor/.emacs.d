@@ -24,7 +24,7 @@
   (setq backup-directory-alist `(("." . "~/.saves")))     ; save backups in separate directory
   (setq-default indent-tabs-mode nil)                     ; use spaces instead of tabs
   (setq-default coffee-tab-width 2)                       ; coffee mode tab width
-  (setq-default c-basic-offset 8)                         ; coffee mode tab width
+  (setq-default c-basic-offset 8)                         ; c mode tab width
   (show-paren-mode 1)                                     ; highlight matching parens
   (fset 'yes-or-no-p 'y-or-n-p)                           ; faster prompts
   (setq confirm-nonexistent-file-or-buffer nil)           ; don't prompt to create a new file
@@ -34,7 +34,8 @@
   (setq-default auto-compression-mode 0)                  ; don't try to decompress files (like ~/.z)
   (setq-default fill-column 80)                           ; text width for fill-paragraph
   (setq-default comment-column 0)                         ; stop moving comments to the right
-  (column-number-mode t)
+  (column-number-mode t)                                  ; show column number
+  (set-default 'truncate-lines t)                         ; disable word wrap
 
   (setq erc-hide-list '("JOIN" "PART" "QUIT")) ; don't show "xxx joined the channel"
   (setq erc-input-line-position -2)  ; supposed to keep newest message at bottom of buffer, but it's not working...
@@ -64,15 +65,24 @@
   (global-linum-mode t)
   (setq linum-format "%4d  ")
   (setq left-fringe 6)
+
+  ;; inverted colors
+  ;; (set-face-attribute 'linum nil :background "#dedede" :foreground "#888888")
+  ;; (load-theme 'whiteboard t)
+  ;; (let ((class '((class color) (min-colors 89))))
+  ;;   (custom-theme-set-faces 'whiteboard
+  ;;                           `(default                          ((,class (:background "whitesmoke" :foreground "white"))))
+  ;;                           `(font-lock-comment-delimiter-face ((,class (:foreground "gray"))))
+  ;;                           `(font-lock-comment-face           ((,class (:foreground "gray"))))
+  ;;                           ))
+
+  ;; normal colors
+  (load-theme 'ample t)
   (set-face-attribute 'fringe nil :background "#FFF")
 
-  (set-default 'truncate-lines t) ; disable word wrap
-
-  (load-theme 'ample t)
-
-  ;
-  ; options for packages
-  ;
+;
+; options for packages
+;
   (require 'smex)
   (smex-initialize)
   (global-set-key (kbd "M-x") 'smex)
@@ -158,6 +168,10 @@
             (lambda ()
               (setq gofmt-command "goimports")  ; use goimports instead of go-fmt
               (add-hook 'before-save-hook 'gofmt-before-save)))
+
+  (add-hook 'markdown-mode-hook
+            (lambda ()
+              (remove-hook 'before-save-hook 'delete-trailing-whitespace)))
 
   ;; (add-hook 'ido-mode-hook
   ;;           (lambda ()

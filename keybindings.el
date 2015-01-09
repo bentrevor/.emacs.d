@@ -29,6 +29,53 @@
 
 (global-set-key (kbd "M-j") 'join-line-below)
 
+(defvar open-paren-char ?()
+(defvar closed-paren-char ?))
+
+(defvar open-bracket-char ?{)
+(defvar closed-bracket-char ?})
+
+(defvar open-sq-bracket-char ?[)
+(defvar closed-sq-bracket-char ?])
+
+(defun on-opening-paren ()
+  (let ((current-char (char-after)))
+    (or (char-equal open-paren-char
+                    current-char)
+        (char-equal open-bracket-char
+                    current-char)
+        (char-equal open-sq-bracket-char
+                    current-char))))
+
+(defun on-closing-paren ()
+  (let ((current-char (char-after)))
+    (or (char-equal closed-paren-char
+                    current-char)
+        (char-equal closed-bracket-char
+                    current-char)
+        (char-equal closed-sq-bracket-char
+                    current-char))))
+
+(defun jump-to-opening-paren ()
+  (interactive)
+  (forward-char)
+  (er/expand-region 1)
+  (keyboard-quit))
+
+(defun jump-to-closing-paren ()
+  (interactive)
+  (er/expand-region 1)
+  (exchange-point-and-mark)
+  (backward-char)
+  (keyboard-quit))
+
+(defun jump-to-matching-paren ()
+  "Like '%' in vim."
+  (interactive)
+  (if (on-opening-paren)
+      (jump-to-closing-paren)
+      (jump-to-opening-paren)))
+
 ;; (defun find-word-at-point ()
 ;;   "Like '*' in vim."
 ;;   (interactive)
