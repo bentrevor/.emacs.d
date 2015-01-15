@@ -130,7 +130,14 @@
   (setq ido-create-new-buffer 'always)
   (setq projectile-completion-system 'ido)
   (setq projectile-require-project-root nil)
-  ;; (setq projectile-enable-caching t)
+  (setq projectile-indexing-method 'alien)
+  (setq projectile-globally-ignored-directories '("node_modules"))
+  (setq projectile-enable-caching t)
+
+  ;; helm
+  (add-to-list 'load-path "~/.emacs.d/elpa/emacs-async")
+  (add-to-list 'load-path "~/.emacs.d/elpa/helm")
+  (require 'helm-config)
 
   (menu-bar-mode -1)
   (when (fboundp 'tool-bar-mode)
