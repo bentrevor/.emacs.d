@@ -24,6 +24,7 @@
   (setq backup-directory-alist `(("." . "~/.saves")))     ; save backups in separate directory
   (setq-default indent-tabs-mode nil)                     ; use spaces instead of tabs
   (setq-default coffee-tab-width 2)                       ; coffee mode tab width
+  (setq-default javascript-tab-width 4)                   ; js mode tab width
   (setq-default c-basic-offset 8)                         ; c mode tab width
   (show-paren-mode 1)                                     ; highlight matching parens
   (fset 'yes-or-no-p 'y-or-n-p)                           ; faster prompts
@@ -132,7 +133,7 @@
   (setq projectile-require-project-root nil)
   (setq projectile-indexing-method 'alien)
   (setq projectile-globally-ignored-directories '("node_modules"))
-  (setq projectile-enable-caching t)
+  ;; (setq projectile-enable-caching t)
 
   ;; helm
   (add-to-list 'load-path "~/.emacs.d/elpa/emacs-async")
@@ -158,9 +159,9 @@
   (require 'whole-line-or-region)
   (whole-line-or-region-mode)
 
-  ;
-  ; hooks
-  ;
+                                        ;
+                                        ; hooks
+                                        ;
   (add-hook 'clojure-mode-hook
 	    (lambda ()
 	      (put-clojure-indent 'describe 'defun)

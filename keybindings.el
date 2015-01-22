@@ -1,25 +1,44 @@
 
+;; define my very own minor mode
+(defvar my-keys-minor-mode-map (make-keymap) "my-keys-minor-mode keymap.")
+
 (global-unset-key (kbd "M-ESC ESC"))
-(global-set-key (kbd "M-/")     'hippie-expand)
-(global-set-key (kbd "C-x C-b") 'ibuffer)
-(global-set-key (kbd "C-x C-k") 'describe-key)
-(global-set-key (kbd "C-s")     'isearch-forward-regexp)
-(global-set-key (kbd "C-r")     'isearch-backward-regexp)
-(global-set-key (kbd "C-M-s")   'isearch-forward)
-(global-set-key (kbd "C-M-r")   'isearch-backward)
-(global-set-key (kbd "M-n")     'scroll-up-line)
-(global-set-key (kbd "M-p")     'scroll-down-line)
-(global-set-key (kbd "M-t")     'zap-up-to-char)
-(global-set-key (kbd "C-x r i") 'string-insert-rectangle)
-(global-set-key (kbd "C-x a r") 'align-regexp)
-(global-set-key (kbd "C-x f")   'projectile-find-file)
-(global-set-key (kbd "C-x C-f") 'projectile-find-file)
-(global-set-key (kbd "C-x M-f") 'find-file)
-(global-set-key (kbd "M-.")     'forward-paragraph)
-(global-set-key (kbd "M-,")     'backward-paragraph)
-(global-set-key (kbd "M-;")     'whole-line-or-region-comment-dwim)
-(global-set-key (kbd "M-o M-o") 'browse-url-at-point)
-(global-set-key (kbd "C-x C-o") 'other-window)
+(define-key my-keys-minor-mode-map (kbd "M-/")       'hippie-expand)
+(define-key my-keys-minor-mode-map (kbd "C-x C-b")   'ibuffer)
+(define-key my-keys-minor-mode-map (kbd "C-x C-k")   'describe-key)
+(define-key my-keys-minor-mode-map (kbd "C-s")       'isearch-forward-regexp)
+(define-key my-keys-minor-mode-map (kbd "C-r")       'isearch-backward-regexp)
+(define-key my-keys-minor-mode-map (kbd "C-M-s")     'isearch-forward)
+(define-key my-keys-minor-mode-map (kbd "C-M-r")     'isearch-backward)
+(define-key my-keys-minor-mode-map (kbd "M-n")       'scroll-up-line)
+(define-key my-keys-minor-mode-map (kbd "M-p")       'scroll-down-line)
+(define-key my-keys-minor-mode-map (kbd "M-t")       'zap-up-to-char)
+(define-key my-keys-minor-mode-map (kbd "C-x r i")   'string-insert-rectangle)
+(define-key my-keys-minor-mode-map (kbd "C-x a r")   'align-regexp)
+(define-key my-keys-minor-mode-map (kbd "C-x f")     'projectile-find-file)
+(define-key my-keys-minor-mode-map (kbd "C-x C-f")   'projectile-find-file)
+(define-key my-keys-minor-mode-map (kbd "C-x M-f")   'find-file)
+(define-key my-keys-minor-mode-map (kbd "M-.")       'forward-paragraph)
+(define-key my-keys-minor-mode-map (kbd "M-,")       'backward-paragraph)
+(define-key my-keys-minor-mode-map (kbd "M-;")       'whole-line-or-region-comment-dwim)
+(define-key my-keys-minor-mode-map (kbd "M-o M-o")   'browse-url-at-point)
+(define-key my-keys-minor-mode-map (kbd "C-x C-o")   'other-window)
+(define-key my-keys-minor-mode-map (kbd "<backtab>") 'other-window)
+
+(define-minor-mode my-keys-minor-mode
+  "A minor mode so that my key settings override annoying major modes."
+  t " my-keys" 'my-keys-minor-mode-map)
+
+(my-keys-minor-mode 1)
+
+;; make my minor mode the most important minor mode
+(defadvice load (after give-my-keybindings-priority)
+  "Try to ensure that my keybindings always have priority."
+  (if (not (eq (car (car minor-mode-map-alist)) 'my-keys-minor-mode))
+      (let ((mykeys (assq 'my-keys-minor-mode minor-mode-map-alist)))
+        (assq-delete-all 'my-keys-minor-mode minor-mode-map-alist)
+        (add-to-list 'minor-mode-map-alist mykeys))))
+(ad-activate 'load)
 
 (defun join-line-below ()
   "Like 'J' in vim."
