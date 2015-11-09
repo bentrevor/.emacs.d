@@ -1,13 +1,6 @@
 ;; define my very own minor mode
 (defvar my-keys-minor-mode-map (make-keymap) "my-keys-minor-mode keymap.")
 
-;; prefixes:
-;; C-q     = tmux
-;; C-x     = windows/buffers
-;; C-c     = vim
-;; C-c o   = org
-;; C-c p   = paredit
-
 ;; unset
 (global-unset-key (kbd "M-ESC ESC"))
 (global-unset-key (kbd "C-x o"))
@@ -22,11 +15,14 @@
 (define-key my-keys-minor-mode-map (kbd "C-s")       'isearch-forward-regexp)
 (define-key my-keys-minor-mode-map (kbd "C-r")       'isearch-backward-regexp)
 (define-key my-keys-minor-mode-map (kbd "C-h")       'delete-backward-char)
+(define-key my-keys-minor-mode-map (kbd "C-c C-y")   'copy-to-clipboard)
+
+(defun copy-to-clipboard ()
+  (interactive)
+  (shell-command-on-region (region-beginning) (region-end) "pbcopy")
+  (deactivate-mark))
 
 ;; M-
-(define-key my-keys-minor-mode-map (kbd "M-/")       'hippie-expand)
-(define-key my-keys-minor-mode-map (kbd "M-n")       'scroll-up-line)
-(define-key my-keys-minor-mode-map (kbd "M-p")       'scroll-down-line)
 (define-key my-keys-minor-mode-map (kbd "M-t")       'zap-up-to-char)
 (define-key my-keys-minor-mode-map (kbd "M-.")       'forward-paragraph)
 (define-key my-keys-minor-mode-map (kbd "M-,")       'backward-paragraph)
@@ -66,19 +62,78 @@
 (define-key my-keys-minor-mode-map (kbd "C-x C-l")   'windmove-right)
 
 ;; uncategorized
+(define-key my-keys-minor-mode-map (kbd "TAB")       'hippie-expand)
+(define-key my-keys-minor-mode-map (kbd "<backtab>") (lambda () (interactive) (insert "\t")))
 (define-key my-keys-minor-mode-map (kbd "C-c M-t")   'transpose-words)
 (define-key my-keys-minor-mode-map (kbd "C-c b p")   'rb-binding-pry)
 (define-key my-keys-minor-mode-map (kbd "C-c j c l") 'js-console-log)
 
 (define-key isearch-mode-map [(control h)] 'isearch-delete-char) ;; C-h to delete while searching
 
+;; repeating
+
+;; s == scroll
+(smartrep-define-key
+    my-keys-minor-mode-map "C-c s" '(("n" . 'scroll-up-line)
+                                     ("p" . 'scroll-down-line)
+                                     ))
+
+;; n == number
+(smartrep-define-key
+    my-keys-minor-mode-map "C-c n" '(("p" . 'increment-next-number)
+                                     ("n" . 'decrement-next-number)
+                                     ))
+
+;; i == insert
+(define-key my-keys-minor-mode-map (kbd "C-c i c t") 'insert-current-time)
+
+;; paredit mode
+(add-hook 'paredit-mode-hook
+          (lambda ()
+            (define-key my-keys-minor-mode-map (kbd "C-c p u") 'paredit-splice-sexp) ;; unwrap
+            (define-key my-keys-minor-mode-map (kbd "C-c p s") 'paredit-split-sexp)
+            (define-key my-keys-minor-mode-map (kbd "C-c p j") 'paredit-join-sexp)
+
+            (define-key my-keys-minor-mode-map (kbd "C-c p i") 'paredit-insert-text)
+
+            ;; (define-key my-keys-minor-mode-map (kbd "C-c p b") 'paredit-backward)
+            ;; (define-key my-keys-minor-mode-map (kbd "C-c p f") 'paredit-forward)
+
+            (define-key my-keys-minor-mode-map (kbd "C-c p b s") 'paredit-backward-slurp-sexp)
+            (define-key my-keys-minor-mode-map (kbd "C-c p f s") 'paredit-forward-slurp-sexp)
+            (define-key my-keys-minor-mode-map (kbd "C-c p b b") 'paredit-backward-barf-sexp)
+            (define-key my-keys-minor-mode-map (kbd "C-c p f b") 'paredit-forward-barf-sexp)
+
+            (smartrep-define-key
+                my-keys-minor-mode-map "C-c p m" '(("b" . 'paredit-backward)
+                                                   ("f" . 'paredit-forward)
+                                                   ("k" . 'paredit-kill)
+                                                   ("w" . 'paredit-wrap-round)
+                                                   ("u" . 'paredit-splice-sexp)
+                                                   ("s" . 'paredit-split-sexp)
+                                                   ("C-f" . 'forward-char)
+                                                   ("C-b" . 'backward-char)
+                                                   ))
+
+            (define-key my-keys-minor-mode-map (kbd "C-c p (") 'paredit-wrap-round)
+            (define-key my-keys-minor-mode-map (kbd "C-c p w (") 'paredit-wrap-round)
+            (define-key my-keys-minor-mode-map (kbd "C-c p w {") 'paredit-wrap-curly)
+            (define-key my-keys-minor-mode-map (kbd "C-c p w [") 'paredit-wrap-square)
+
+            (global-paren-face-mode t)
+            ))
 
 ;; defined below ;;
 ;;;;;;;;;;;;;;;;;;;
 (define-key my-keys-minor-mode-map (kbd "C-y") 'yank-and-indent)
+(define-key my-keys-minor-mode-map (kbd "M-C-y") 'yank)
+(define-key my-keys-minor-mode-map (kbd "M-C-t") 'kill-to-string)
 (define-key my-keys-minor-mode-map (kbd "M-j") 'join-line-below)
 (define-key my-keys-minor-mode-map (kbd "C-]") 'jump-to-matching-paren)
 (define-key my-keys-minor-mode-map (kbd "C-c %") 'jump-to-matching-paren)
+
+;; yank-and-indent is annoying in haskell
+(add-hook 'haskell-mode-hook (lambda () (define-key my-keys-minor-mode-map (kbd "C-y") 'yank)))
 
 ;; C-c vim stuff
 (define-key my-keys-minor-mode-map (kbd "C-c ;")     'open-prompt)
@@ -150,6 +205,11 @@
   (interactive)
   (switch-to-buffer (other-buffer (current-buffer) 1)))
 
+(defun paredit-insert-text (txt)
+  "ignore paredit rules and just insert text"
+  (interactive "stext: ")
+  (insert txt))
+
 (defun open-prompt (command)
   "like pressing : in vim."
   (interactive "s:")
@@ -160,7 +220,8 @@
      ((string= last-char "y") (copy-line-by-number line-no))
      ((string= last-char "p") (yank-line-by-number line-no))
      ((< 0 (string-to-number command)) (goto-line (string-to-number command)))
-     (t (message "invalid!")))))
+     (t (message "invalid!")))
+    (save-buffer)))
 
 (defun vim-function (command boundaries scope)
   ;; (backward-char) (forward-char) ;; "clears" the kill ring
@@ -217,6 +278,12 @@
   (indent-for-tab-command)
   )
 
+(defun insert-current-time ()
+  "insert time"
+  (interactive)
+
+  (insert (substring (current-time-string) 11 16)))
+
 (defun rb-binding-pry ()
   "add `binding.pry`"
   (interactive)
@@ -266,11 +333,12 @@
   (yank-and-indent)
   (exchange-point-and-mark))
 
-(defun delete-whole-word-forward ()
-  "Like 'dW' in vim (so it removes the space after the current word)."
-  (interactive)
-  (kill-word 1)
-  (delete-char 1))
+(defun kill-to-string (target)
+  (interactive "skill to string: ")
+  (set-mark-command nil)
+  (search-forward target)
+  (search-backward target)
+  (kill-region (region-beginning) (region-end)))
 
 (defun join-line-below ()
   "Like 'J' in vim."
@@ -304,6 +372,25 @@
                     current-char)
         (char-equal closed-sq-bracket-char
                     current-char))))
+
+(defun nearest-half (x)
+  (/ (round (* 2 x)) 2.0))
+
+(defun insert-pert (nums)
+  (interactive "sestimates: ")
+  (let* ((strs (split-string nums " "))
+         (low (nth 0 strs))
+         (medium (nth 1 strs))
+         (high (nth 2 strs))
+         (pert (/ (+ (string-to-number low) (* 4 (string-to-number medium)) (string-to-number high)) 6.0))
+         (rounded-pert (number-to-string (nearest-half pert)))
+         )
+    (insert (concat rounded-pert "(" low "," medium "," high ")"))))
+
+;; 3 -> 3
+;; 3.2 -> 3
+;; 3.3 -> 3.5
+;; 3 -> 3
 
 (defun jump-to-opening-paren ()
   (forward-char)
@@ -367,17 +454,6 @@
 
 (defvar first-names '("mary" "patricia" "linda" "barbara" "elizabeth" "sarah" "kimberly" "deborah" "jessica" "shirley"
                       "cynthia" "angela" "melissa" "brenda" "amy" "anna" "rebecca" "virginia" "kathleen" "pamela" "martha"
-                      "debra" "amanda" "stephanie" "carolyn" "christine" "marie" "janet" "catherine" "frances" "ann"
-                      "joyce" "diane" "alice" "julie" "heather" "teresa" "doris" "gloria" "evelyn" "jean" "cheryl"
-                      "mildred" "katherine" "joan" "ashley" "judith" "rose" "janice" "kelly" "nicole" "judy" "christina"
-                      "kathy" "theresa" "beverly" "denise" "tammy" "irene" "jane" "lori" "rachel" "marilyn" "andrea"
-                      "kathryn" "louise" "sara" "anne" "jacqueline" "wanda" "bonnie" "julia" "ruby" "lois" "tina"
-                      "phyllis" "norma" "paula" "diana" "annie" "lillian" "emily" "robin" "peggy" "crystal" "gladys"
-                      "rita" "dawn" "connie" "florence" "tracy" "edna" "tiffany" "carmen" "rosa" "cindy" "grace" "wendy"
-                      "victoria" "edith" "kim" "sherry" "sylvia" "josephine" "thelma" "shannon" "sheila" "ethel" "ellen"
-                      "elaine" "marjorie" "carrie" "charlotte" "monica" "esther" "pauline" "emma" "juanita" "anita"
-                      "rhonda" "hazel" "amber" "eva" "debbie" "april" "leslie" "clara" "lucille" "jamie" "joanne"
-                      "eleanor" "valerie" "danielle" "megan" "alicia" "suzanne" "michele" "gail" "bertha" "darlene"
                       "veronica" "jill" "erin" "geraldine" "lauren" "cathy" "joann" "lorraine" "lynn" "sally" "regina"
                       "erica" "beatrice" "dolores" "bernice" "audrey" "yvonne" "annette" "june" "samantha" "marion" "dana"
                       "stacy" "ana" "renee" "ida" "vivian" "roberta" "holly" "brittany" "melanie" "loretta" "yolanda"
@@ -386,14 +462,6 @@
                       "steven" "edward" "brian" "ronald" "anthony" "kevin" "jason" "matthew" "gary" "timothy" "jose"
                       "larry" "jeffrey" "frank" "scott" "eric" "stephen" "andrew" "raymond" "gregory" "joshua" "jerry"
                       "dennis" "walter" "patrick" "peter" "harold" "douglas" "henry" "carl" "arthur" "ryan" "roger" "joe"
-                      "juan" "jack" "albert" "jonathan" "justin" "terry" "gerald" "keith" "samuel" "willie" "ralph"
-                      "lawrence" "nicholas" "roy" "benjamin" "bruce" "brandon" "adam" "harry" "fred" "wayne" "billy"
-                      "steve" "louis" "jeremy" "aaron" "randy" "howard" "eugene" "carlos" "russell" "bobby" "victor"
-                      "martin" "ernest" "phillip" "todd" "jesse" "craig" "alan" "shawn" "clarence" "sean" "philip" "chris"
-                      "johnny" "earl" "jimmy" "antonio" "danny" "bryan" "tony" "luis" "mike" "stanley" "leonard" "nathan"
-                      "dale" "manuel" "rodney" "curtis" "norman" "allen" "marvin" "vincent" "glenn" "jeffery" "travis"
-                      "jeff" "chad" "jacob" "lee" "melvin" "alfred" "kyle" "francis" "bradley" "jesus" "herbert"
-                      "frederick" "ray" "joel" "edwin" "don" "eddie" "ricky" "troy" "randall" "barry" "alexander"
                       "bernard" "mario" "leroy" "francisco" "marcus" "micheal" "theodore" "clifford" "miguel" "oscar"
                       "jay" "jim" "tom" "calvin" "alex" "jon" "ronnie" "bill" "lloyd" "tommy"))
 
@@ -407,15 +475,32 @@
                      "scozzari" "siverling" "speigner" "spinnato" "stentz" "stocke" "sundt" "thorup" "tresch" "tripplett"
                      "uhls" "urdaneta" "uttech" "vosler" "werber" "wieand" "zacharia" "zeleznik" "zoucha" "zuch"))
 
+(defun select-random (coll)
+  (let ((selected (nth (random (length coll)) coll)))
+    (either selected
+            (capitalize selected))))
+
+(defun either (a b)
+  (if (= 1 (random 2)) a b))
+
 (defun run-erc ()
   (interactive)
-  (let ((nickname (concat (nth (random (length first-names)) first-names)
-                          "_"
-                          (nth (random (length last-names)) last-names))))
+  (let ((nickname (concat (select-random first-names)
+                          (either (concat "_" (select-random last-names))
+                                  (number-to-string (+ 1000 (random 10000)))
+                                  ))))
     (erc :server "irc.freenode.net"
          :port 6667
          :nick nickname
          )))
+
+(defun run-merc ()
+  (interactive)
+
+  (erc :server "irc.freenode.net"
+       :port 6667
+       :nick "ben__t"
+       ))
 
 ;; mode ;;
 ;;;;;;;;;;

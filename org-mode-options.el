@@ -24,41 +24,81 @@
   (zap-up-to-char 1 (string-to-char "]"))
   (insert new-time))
 
+(defun org-date-change-minutes ()
+  (interactive "")
+  (search-forward "]")
+  (backward-char)
+  (backward-char))
+
+(defun org-date-change-hours ()
+  (interactive "")
+  (search-forward "]")
+  (backward-char)
+  (backward-char)
+  (backward-char)
+  (backward-char)
+  (backward-char))
+
+(defun org-insert-property (prop)
+  (interactive "sproperty: ")
+  (org-beginning-of-line)
+  (insert (concat ":" (upcase prop) ": ")))
+
 (add-hook 'org-mode-hook (lambda ()
                            (linum-mode 0) ;; disable line numbers
                            (global-linum-mode 0) ;; disable line numbers
                            (visual-line-mode)    ;; wrap long lines
 
+                           (defun org-todo-subtree ()
+                             (interactive)
+                             ;; mark beginning of first task heading
+                             (beginning-of-line) (next-line) (forward-word) (backward-word) (set-mark-command nil)
+                             ;; go back up to checklist heading and jump to next checklist
+                             (previous-line) (org-forward-heading-same-level 1)
+                             ;; put cursor at beginning of last task heading and insert TODO
+                             (previous-line) (forward-word) (backward-word) (string-insert-rectangle (region-beginning) (region-end) "TODO ")
+                             (deactivate-mark))
+
                            ;; a == agenda
                            ;; (just a todo list, not what org mode considers an "agenda")
-                           (global-set-key (kbd "C-c o a a") (lambda () (interactive) (org-small-agenda-list "")))
+                           (global-set-key (kbd "C-c o a a") (lambda () (interactive) (org-small-agenda-list ""))) ; all
                            (global-set-key (kbd "C-c o a t") (lambda () (interactive) (org-small-agenda-list "TODO")))
                            (global-set-key (kbd "C-c o a d") (lambda () (interactive) (org-small-agenda-list "DONE")))
 
+                           ;; i == insert
+                           (global-set-key (kbd "C-c o i p") 'org-insert-property)
+
                            ;; t == todo
-                           (global-set-key (kbd "C-c o t t") (lambda () (interactive) (org-todo "TODO")))
-                           (global-set-key (kbd "C-c o t d") (lambda () (interactive) (org-todo "DONE")))
-                           (global-set-key (kbd "C-c o t l") (lambda () (interactive) (org-todo "LATER")))
+                           (smartrep-define-key
+                               global-map "C-c o t" '(("t" . (lambda () (interactive) (org-todo "TODO")))
+                                                      ("d" . (lambda () (interactive) (org-todo "DONE")))
+                                                      ("l" . (lambda () (interactive) (org-todo "LATER")))
+                                                      ("s" . 'org-todo-subtree)
+                                                      ("C-n" . 'outline-next-visible-heading)
+                                                      ("C-p" . 'outline-previous-visible-heading)))
 
                            ;; l == link
                            (global-set-key (kbd "C-c o l c") 'org-store-link) ; copy
                            (global-set-key (kbd "C-c o l p") 'org-insert-link) ; paste
                            (global-set-key (kbd "C-c o l f") 'org-open-at-point) ; follow
 
-                           ;; m == move (subtree)
-                           (require 'smartrep)
+                           ;; m s == move subtree
                            (smartrep-define-key
-                              global-map "C-c o m" '(("b" . 'org-promote-subtree)
-                                                     ("f" . 'org-demote-subtree)
-                                                     ("p" . 'org-metaup)
-                                                     ("n" . 'org-metadown)))
+                              global-map "C-c o m s" '(("b" . 'org-promote-subtree)
+                                                       ("f" . 'org-demote-subtree)
+                                                       ("C-n" . 'next-line)
+                                                       ("C-p" . 'previous-line)
+                                                       ("p" . 'org-metaup)
+                                                       ("n" . 'org-metadown)))
 
                            ;; d == date
                            (smartrep-define-key
                                global-map "C-c o d" '(("b" . 'org-timestamp-down-day)
                                                       ("f" . 'org-timestamp-up-day)
                                                       ("p" . 'org-timestamp-up)
-                                                      ("n" . 'org-timestamp-down)))
+                                                      ("n" . 'org-timestamp-down)
+                                                      ("m" . 'org-date-change-minutes)
+                                                      ("h" . 'org-date-change-hours)))
 
                            (global-set-key (kbd "C-c o d c") 'org-date-change) ; change
 
@@ -67,5 +107,4 @@
                            (global-set-key (kbd "C-c o c o") 'org-clock-out)
                            (global-set-key (kbd "C-c o c j") 'org-clock-goto)
 
-                           (add-hook 'before-save-hook 'org-align-all-tags)
-                           ))
+                           (add-hook 'before-save-hook 'org-align-all-tags)))
