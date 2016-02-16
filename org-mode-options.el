@@ -6,7 +6,6 @@
 (setq org-log-done nil)                   ;; no timestamp when task moves to DONE
 (setq org-enforce-todo-dependencies t)    ;; can't finish a task when a subtask is incomplete
 (setq org-agenda-todo-list-sublevels nil) ;; only show top-level TODO tasks in agenda todo list
-(setq org-clock-idle-time 20)             ;; ask how to clock time after being idle (minutes)
 
 (setq org-todo-keywords
       '((type "TODO(t)" "LATER(l)" "|" "DONE(d)")))
@@ -44,6 +43,15 @@
   (org-beginning-of-line)
   (insert (concat ":" (upcase prop) ": ")))
 
+(defun org-journal-entry ()
+  (interactive)
+  (end-of-buffer)
+  (insert "\n\n* ")
+
+  (setq current-prefix-arg '(16))      ; C-u C-u
+  (call-interactively 'org-time-stamp)
+  (insert "\n"))
+
 (add-hook 'org-mode-hook (lambda ()
                            (linum-mode 0) ;; disable line numbers
                            (global-linum-mode 0) ;; disable line numbers
@@ -65,8 +73,11 @@
                            (global-set-key (kbd "C-c o a t") (lambda () (interactive) (org-small-agenda-list "TODO")))
                            (global-set-key (kbd "C-c o a d") (lambda () (interactive) (org-small-agenda-list "DONE")))
 
-                           ;; i == insert
-                           (global-set-key (kbd "C-c o i p") 'org-insert-property)
+                           ;; p == property
+                           (global-set-key (kbd "C-c o p") 'org-insert-property)
+
+                           ;; j e == journal entry
+                           (global-set-key (kbd "C-c o j e") 'org-journal-entry)
 
                            ;; t == todo
                            (smartrep-define-key
@@ -91,6 +102,18 @@
                                                        ("p" . 'org-metaup)
                                                        ("n" . 'org-metadown)))
 
+                           ;; n == navigate
+                           (smartrep-define-key
+                               global-map "C-c o n" '(("b" . 'org-backward-heading-same-level)
+                                                      ("f" . 'org-forward-heading-same-level)
+                                                      ("u" . 'outline-up-heading)
+                                                      ("p" . 'outline-previous-visible-heading)
+                                                      ("n" . 'outline-next-visible-heading)
+                                                      ("C-b" . 'backward-char)
+                                                      ("C-f" . 'forward-char)
+                                                      ("C-n" . 'next-line)
+                                                      ("C-p" . 'previous-line)))
+
                            ;; d == date
                            (smartrep-define-key
                                global-map "C-c o d" '(("b" . 'org-timestamp-down-day)
@@ -98,13 +121,9 @@
                                                       ("p" . 'org-timestamp-up)
                                                       ("n" . 'org-timestamp-down)
                                                       ("m" . 'org-date-change-minutes)
-                                                      ("h" . 'org-date-change-hours)))
+                                                      ("h" . 'org-date-change-hours)
+                                                      ("C-f" . 'forward-char)
+                                                      ("C-b" . 'backward-char)))
 
-                           (global-set-key (kbd "C-c o d c") 'org-date-change) ; change
-
-                           ;; c == clock
-                           (global-set-key (kbd "C-c o c i") 'org-clock-in)
-                           (global-set-key (kbd "C-c o c o") 'org-clock-out)
-                           (global-set-key (kbd "C-c o c j") 'org-clock-goto)
-
-                           (add-hook 'before-save-hook 'org-align-all-tags)))
+                           (add-hook 'before-save-hook 'org-align-all-tags)
+                           ))

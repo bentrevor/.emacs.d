@@ -12,6 +12,8 @@
   (setq ruby-insert-encoding-magic-comment nil)
   (add-hook 'before-save-hook 'delete-trailing-whitespace)
   (add-hook 'prog-mode-hook 'highlight-numbers-mode)
+  (define-key isearch-mode-map [(control h)] 'isearch-delete-char) ;; C-h to delete while searching
+
   ;; (add-hook 'prog-mode-hook 'highlight-escape-sequences)
 
   (setq x-select-enable-clipboard            t
@@ -62,6 +64,7 @@
   (setq web-mode-markup-indent-offset 2) ;; html indent
   (setq web-mode-code-indent-offset 2) ;; js indent
 
+  (add-to-list 'auto-mode-alist '("zshenv" . shell-script-mode))
   (add-to-list 'auto-mode-alist '("zshrc" . shell-script-mode))
   (add-to-list 'auto-mode-alist '("\\.zsh$" . shell-script-mode))
 

@@ -9,18 +9,12 @@
 (global-unset-key (kbd "C-x 1"))
 (global-unset-key (kbd "C-x 2"))
 (global-unset-key (kbd "C-x 3"))
-(define-key my-keys-minor-mode-map (kbd "C-c C-h")   (lambda ())) ;; global-unset-key wasn't working
+(define-key my-keys-minor-mode-map (kbd "C-c C-h")   '(lambda () (interactive))) ;; global-unset-key wasn't working
 
 ;; C-
 (define-key my-keys-minor-mode-map (kbd "C-s")       'isearch-forward-regexp)
 (define-key my-keys-minor-mode-map (kbd "C-r")       'isearch-backward-regexp)
 (define-key my-keys-minor-mode-map (kbd "C-h")       'delete-backward-char)
-(define-key my-keys-minor-mode-map (kbd "C-c C-y")   'copy-to-clipboard)
-
-(defun copy-to-clipboard ()
-  (interactive)
-  (shell-command-on-region (region-beginning) (region-end) "pbcopy")
-  (deactivate-mark))
 
 ;; M-
 (define-key my-keys-minor-mode-map (kbd "M-t")       'zap-up-to-char)
@@ -29,25 +23,25 @@
 (define-key my-keys-minor-mode-map (kbd "M-;")       'whole-line-or-region-comment-dwim)
 (define-key my-keys-minor-mode-map (kbd "M-o M-o")   'browse-url-at-point)
 
-;; M- == "bigger" version of C-
 (define-key my-keys-minor-mode-map (kbd "C-w")       'backward-kill-word)
 (define-key my-keys-minor-mode-map (kbd "M-w")       'forward-to-beginning-of-next-word)
+
 (define-key my-keys-minor-mode-map (kbd "C-v")       'whole-line-or-region-kill-region)
 (define-key my-keys-minor-mode-map (kbd "M-v")       'whole-line-or-region-kill-ring-save)
 
 ;; C-x
 (define-key my-keys-minor-mode-map (kbd "C-x d k")   'describe-key)
-(define-key my-keys-minor-mode-map (kbd "C-x r i")   'string-insert-rectangle)
 (define-key my-keys-minor-mode-map (kbd "C-x C-b")   'ibuffer)
-(define-key my-keys-minor-mode-map (kbd "C-x a r")   'align-regexp)
 (define-key my-keys-minor-mode-map (kbd "C-x f")     'projectile-find-file)
 (define-key my-keys-minor-mode-map (kbd "C-x C-f")   'projectile-find-file)
 (define-key my-keys-minor-mode-map (kbd "C-x M-f")   'find-file)
+(define-key my-keys-minor-mode-map (kbd "C-x C-y")   'pbcopy)
 ;; tmux-like
 (define-key my-keys-minor-mode-map (kbd "C-x C-o")   'switch-to-previous-buffer)
 (define-key my-keys-minor-mode-map (kbd "C-x z")     'delete-other-windows)
 (define-key my-keys-minor-mode-map (kbd "C-x /")     'winner-undo)
 (define-key my-keys-minor-mode-map (kbd "C-x \\")    'split-window-right)
+(define-key my-keys-minor-mode-map (kbd "C-x C-\\")  'split-window-right)
 (define-key my-keys-minor-mode-map (kbd "C-x -")     'split-window-below)
 (define-key my-keys-minor-mode-map (kbd "C-x C-d")   'delete-window)
 
@@ -62,13 +56,8 @@
 (define-key my-keys-minor-mode-map (kbd "C-x C-l")   'windmove-right)
 
 ;; uncategorized
-(define-key my-keys-minor-mode-map (kbd "TAB")       'hippie-expand)
-(define-key my-keys-minor-mode-map (kbd "<backtab>") (lambda () (interactive) (insert "\t")))
+(define-key my-keys-minor-mode-map (kbd "<backtab>") 'hippie-expand)
 (define-key my-keys-minor-mode-map (kbd "C-c M-t")   'transpose-words)
-(define-key my-keys-minor-mode-map (kbd "C-c b p")   'rb-binding-pry)
-(define-key my-keys-minor-mode-map (kbd "C-c j c l") 'js-console-log)
-
-(define-key isearch-mode-map [(control h)] 'isearch-delete-char) ;; C-h to delete while searching
 
 ;; repeating
 
@@ -84,9 +73,6 @@
                                      ("n" . 'decrement-next-number)
                                      ))
 
-;; i == insert
-(define-key my-keys-minor-mode-map (kbd "C-c i c t") 'insert-current-time)
-
 ;; paredit mode
 (add-hook 'paredit-mode-hook
           (lambda ()
@@ -96,29 +82,10 @@
 
             (define-key my-keys-minor-mode-map (kbd "C-c p i") 'paredit-insert-text)
 
-            ;; (define-key my-keys-minor-mode-map (kbd "C-c p b") 'paredit-backward)
-            ;; (define-key my-keys-minor-mode-map (kbd "C-c p f") 'paredit-forward)
-
             (define-key my-keys-minor-mode-map (kbd "C-c p b s") 'paredit-backward-slurp-sexp)
             (define-key my-keys-minor-mode-map (kbd "C-c p f s") 'paredit-forward-slurp-sexp)
             (define-key my-keys-minor-mode-map (kbd "C-c p b b") 'paredit-backward-barf-sexp)
             (define-key my-keys-minor-mode-map (kbd "C-c p f b") 'paredit-forward-barf-sexp)
-
-            (smartrep-define-key
-                my-keys-minor-mode-map "C-c p m" '(("b" . 'paredit-backward)
-                                                   ("f" . 'paredit-forward)
-                                                   ("k" . 'paredit-kill)
-                                                   ("w" . 'paredit-wrap-round)
-                                                   ("u" . 'paredit-splice-sexp)
-                                                   ("s" . 'paredit-split-sexp)
-                                                   ("C-f" . 'forward-char)
-                                                   ("C-b" . 'backward-char)
-                                                   ))
-
-            (define-key my-keys-minor-mode-map (kbd "C-c p (") 'paredit-wrap-round)
-            (define-key my-keys-minor-mode-map (kbd "C-c p w (") 'paredit-wrap-round)
-            (define-key my-keys-minor-mode-map (kbd "C-c p w {") 'paredit-wrap-curly)
-            (define-key my-keys-minor-mode-map (kbd "C-c p w [") 'paredit-wrap-square)
 
             (global-paren-face-mode t)
             ))
@@ -224,7 +191,6 @@
     (save-buffer)))
 
 (defun vim-function (command boundaries scope)
-  ;; (backward-char) (forward-char) ;; "clears" the kill ring
   (vim-select boundaries scope)
 
   (cond
@@ -270,41 +236,13 @@
   (er/expand-region 1)
   )
 
+(defalias 'rectangle-insert 'string-insert-rectangle)
+(defalias 'rectangle-replace 'string-rectangle)
 
-(defun substitute-line ()
+(defun pbcopy ()
   (interactive)
-  (beginning-of-line)
-  (kill-line)
-  (indent-for-tab-command)
-  )
-
-(defun insert-current-time ()
-  "insert time"
-  (interactive)
-
-  (insert (substring (current-time-string) 11 16)))
-
-(defun rb-binding-pry ()
-  "add `binding.pry`"
-  (interactive)
-  (beginning-of-line)
-  (open-line 1)
-  (indent-for-tab-command)
-  (insert "binding.pry")
-  (save-buffer)
-  )
-
-(defun js-console-log ()
-  "add `console.log('')`"
-  (interactive)
-  (beginning-of-line)
-  (open-line 1)
-  (indent-for-tab-command)
-  (insert "console.log('');")
-  (backward-char)
-  (backward-char)
-  (backward-char)
-  )
+  (shell-command-on-region (region-beginning) (region-end) "pbcopy")
+  (deactivate-mark))
 
 (defun forward-to-beginning-of-next-word ()
   "Like 'w' in vim."
@@ -386,11 +324,6 @@
          (rounded-pert (number-to-string (nearest-half pert)))
          )
     (insert (concat rounded-pert "(" low "," medium "," high ")"))))
-
-;; 3 -> 3
-;; 3.2 -> 3
-;; 3.3 -> 3.5
-;; 3 -> 3
 
 (defun jump-to-opening-paren ()
   (forward-char)
@@ -494,13 +427,12 @@
          :nick nickname
          )))
 
-(defun run-merc ()
-  (interactive)
-
-  (erc :server "irc.freenode.net"
-       :port 6667
-       :nick "ben__t"
-       ))
+(defun just-text ()
+  (setq mode-line-format nil)
+  (global-linum-mode 0)
+  (define-key my-keys-minor-mode-map (kbd "C-x C-s") (lambda () (interactive) (message "can't save in notes mode")))
+  (setq initial-scratch-message "")
+  )
 
 ;; mode ;;
 ;;;;;;;;;;
