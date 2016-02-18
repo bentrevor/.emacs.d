@@ -46,11 +46,18 @@
 (defun org-journal-entry ()
   (interactive)
   (end-of-buffer)
-  (insert "\n\n* ")
+  (insert "\n** ")
 
   (setq current-prefix-arg '(16))      ; C-u C-u
   (call-interactively 'org-time-stamp)
   (insert "\n"))
+
+(defun org-update-journal-entry ()
+  (interactive)
+  (org-journal-entry)
+  (end-of-buffer)
+  (outline-previous-visible-heading 1)
+  (org-metaup 1))
 
 (add-hook 'org-mode-hook (lambda ()
                            (linum-mode 0) ;; disable line numbers
@@ -78,6 +85,7 @@
 
                            ;; j e == journal entry
                            (global-set-key (kbd "C-c o j e") 'org-journal-entry)
+                           (global-set-key (kbd "C-c o j u") 'org-update-journal-entry)
 
                            ;; t == todo
                            (smartrep-define-key
