@@ -33,23 +33,11 @@
 (define-key my-keys-minor-mode-map (kbd "C-c ;")     'open-prompt)
 (define-key my-keys-minor-mode-map (kbd "C-c C-\\")  'open-prompt)
 
-(defun delete-line-by-number (line-number)
-  "Like :<n>d in vim."
-  (goto-line line-number)
-  (whole-line-or-region-kill-region 1)
-  (exchange-point-and-mark))
-
-(defun copy-line-by-number (line-number)
-  "Like :<n>y in vim."
-  (goto-line line-number)
-  (whole-line-or-region-kill-ring-save 1)
-  (exchange-point-and-mark))
-
-(defun yank-line-by-number (line-number)
-  "Like :<n>p in vim."
-  (goto-line line-number)
-  (yank-and-indent)
-  (exchange-point-and-mark))
+(defmacro on-line-number (line-number cmd)
+  `(progn
+        (goto-line line-number)
+        ,cmd
+        (exchange-point-and-mark)))
 
 (defun open-prompt (command)
   "like pressing : in vim."
@@ -57,9 +45,11 @@
   (let ((last-char (substring command -1))
         (line-no (string-to-number (substring command 0 -1))))
     (cond
-     ((string= last-char "d") (delete-line-by-number line-no))
-     ((string= last-char "y") (copy-line-by-number line-no))
-     ((string= last-char "p") (yank-line-by-number line-no))
+     ((string-match last-char "dyp") (on-line-number line-no
+                                                     (cond
+                                                      ((string= last-char "d") (whole-line-or-region-kill-region 1))
+                                                      ((string= last-char "y") (whole-line-or-region-kill-ring-save 1))
+                                                      ((string= last-char "p") (yank-and-indent)))))
      ((< 0 (string-to-number command)) (goto-line (string-to-number command)))
      (t (message "invalid!")))
     (save-buffer)))
