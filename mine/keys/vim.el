@@ -80,6 +80,24 @@
 (define-key my-keys-minor-mode-map (kbd "C-c y i b") 'copy-in-parens)
 (define-key my-keys-minor-mode-map (kbd "C-c y i B") 'copy-in-curly-braces)
 
+(defun pbcopy-filename ()
+  (interactive)
+  (shell-command-to-string (concat "echo -n " (buffer-file-name) "| pbcopy")))
+
+(define-key my-keys-minor-mode-map (kbd "C-c y f") 'pbcopy-filename)
+
+(defun pbcopy-rspec-it ()
+  (interactive)
+  (shell-command-to-string (concat "echo -n " (progn (re-search-backward "^ *it ")
+                                                     (forward-to-beginning-of-next-word)
+                                                     (forward-to-beginning-of-next-word)
+                                                     (backward-char)
+                                                     (set-mark-command nil)
+                                                     (end-of-line)
+                                                     (backward-char) (backward-char) (backward-char)
+                                                     (kill-ring-save (region-beginning) (region-end))
+                                                     (yank)) "| pbcopy")))
+
 (define-key my-keys-minor-mode-map (kbd "C-c v a p") 'select-around-paragraph)
 (define-key my-keys-minor-mode-map (kbd "C-c v a w") 'select-around-word)
 (define-key my-keys-minor-mode-map (kbd "C-c v a b") 'select-around-parens)

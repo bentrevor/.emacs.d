@@ -13,8 +13,11 @@
   (shell-command-on-region (region-beginning) (region-end) "pbcopy")
   (deactivate-mark))
 
-(define-key my-keys-minor-mode-map (kbd "C-c t")     'zap-up-to-char)
-(define-key my-keys-minor-mode-map (kbd "C-c T")     'kill-to-string)
+(define-key my-keys-minor-mode-map (kbd "C-x a g s")   'ag-project)
+(define-key my-keys-minor-mode-map (kbd "C-x a g r")   'ag-project-regexp)
+
+(define-key my-keys-minor-mode-map (kbd "C-c k")     'zap-up-to-char)
+(define-key my-keys-minor-mode-map (kbd "C-c K")     'kill-to-string)
 (defun kill-to-string (target)
   (interactive "skill to string: ")
   (set-mark-command nil)

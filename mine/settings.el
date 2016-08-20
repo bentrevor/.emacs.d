@@ -4,13 +4,24 @@
 (define-key isearch-mode-map [(control h)] 'isearch-delete-char) ;; C-h to delete while searching
 
 ;; colors
-(load-theme 'ample t)
+(load-theme 'yoshi t)
 (set-face-attribute 'fringe nil :background "#FFF")
 
+(setq ag-highlight-search t)
+
 ;; line number options
-(global-linum-mode t)
+;; (global-linum-mode t)
 (setq linum-format "%4d  ")
 (setq left-fringe 6)
+
+(add-hook 'ruby-mode-hook #'linum-mode)
+(add-hook 'paredit-mode-hook #'linum-mode)
+(add-hook 'sh-mode-hook #'linum-mode)
+(add-hook 'markdown-mode-hook #'linum-mode)
+(add-hook 'js-mode-hook #'linum-mode)
+(add-hook 'html-mode-hook #'linum-mode)
+(add-hook 'yaml-mode-hook #'linum-mode)
+
 
 (setq ruby-insert-encoding-magic-comment nil)
 (setq x-select-enable-clipboard            t
@@ -37,18 +48,19 @@
 (setq-default comment-column 0)                         ;; stop moving comments to the right
 (column-number-mode t)                                  ;; show column number
 (set-default 'truncate-lines t)                         ;; disable word wrap
-(setq ruby-deep-indent-paren nil)                       ;; better indentation for multiline hashes in ruby
+;; (setq ruby-deep-indent-paren nil)                       ;; better indentation for multiline hashes in ruby
 (winner-mode 1)                                         ;; undo/redo split layout changes
 (setq echo-keystrokes 0.001)                            ;; like vim's showcmd
-
+(setq require-final-newline nil)                        ;; don't add newline at end of file
 
 ;;;;;;;;;;;;;;;
 ;;
 ;; global hooks
 ;;
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
+;; (add-hook 'before-save-hook 'run-rubocop)
 (add-hook 'prog-mode-hook 'highlight-numbers-mode)
-;;(add-hook 'prog-mode-hook 'highlight-escape-sequences)
+;; (add-hook 'prog-mode-hook 'highlight-escape-sequences)
 
 ;;;;;;;;;;;;;
 ;;

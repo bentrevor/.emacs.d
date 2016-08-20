@@ -1,6 +1,5 @@
 (autoload 'zap-up-to-char "misc" "like 't' in vim" 'interactive)
 (autoload 'ruby-mode "ruby-mode" "Major mode for ruby files" t)
-(autoload 'nimrod-mode "nimrod-mode" "Major mode for nim files" t)
 
 (add-to-list 'auto-mode-alist '("Gemfile$" . ruby-mode))
 (add-to-list 'auto-mode-alist '("\\.rake$" . ruby-mode))
@@ -18,18 +17,33 @@
 (add-to-list 'auto-mode-alist '("zshrc" . shell-script-mode))
 (add-to-list 'auto-mode-alist '("\\.zsh$" . shell-script-mode))
 
-(add-to-list 'auto-mode-alist '("\\.purs$" . haskell-mode))
-
-;; for nand2tetris
-(add-to-list 'auto-mode-alist '("\\.hdl$" . c-mode))
-
-(add-to-list 'auto-mode-alist '("\\.nim$" . nimrod-mode))
-
-(require 'smex)
-(smex-initialize)
-(global-set-key (kbd "M-x") 'smex)
+(require 'projectile)
 
 (projectile-global-mode) ;; like command-t
+
+(require 'helm-config)
+(helm-mode 1)
+
+(require 'helm-projectile)
+(helm-projectile-on)
+
+(setq projectile-globally-ignored-directories '(
+                                                "node_modules"
+                                                "app/assets"
+                                                "tmp"
+                                                "vendor"
+                                                "elpa"
+                                                ))
+
+;; So that helm does not use current window to display the helm window
+(setq helm-split-window-in-side-p t)
+
+;; make helm always open at the bottom
+(add-to-list 'display-buffer-alist
+             `(,(rx bos "*helm" (* not-newline) "*" eos)
+               (display-buffer-in-side-window)
+               (inhibit-same-window . t)
+               (window-height . 0.4)))
 
 (font-lock-add-keywords 'javascript-mode
                         '(("Math" . font-lock-type-face)
@@ -41,24 +55,6 @@
                           ("JSON" . font-lock-type-face)
                           ("Object" . font-lock-type-face)
                           ))
-
-(require 'flx-ido)
-(ido-mode 1)
-(ido-everywhere 1)
-(flx-ido-mode 1)
-;; vertical minibuffer
-(setq ido-decorations (quote ("\n-> " "" "\n   " "\n   ..." "[" "]" " [No match]" " [Matched]" " [Not readable]" " [Too big]" " [Confirm]")))
-(add-hook 'ido-minibuffer-setup-hook (lambda ()
-                                       (set (make-local-variable 'truncate-lines) nil)))
-(add-hook 'ido-setup-hook (lambda ()
-                            (define-key ido-completion-map (kbd "C-n") 'ido-next-match)
-                            (define-key ido-completion-map (kbd "C-p") 'ido-prev-match)))
-(setq ido-create-new-buffer 'always)
-(setq projectile-completion-system 'ido)
-(setq projectile-require-project-root nil)
-(setq projectile-indexing-method 'alien)
-(setq projectile-globally-ignored-directories '("node_modules"))
-;; (setq projectile-enable-caching t)
 
 (menu-bar-mode -1)
 (when (fboundp 'tool-bar-mode)
