@@ -34,6 +34,7 @@
                                                 "tmp"
                                                 "vendor"
                                                 "elpa"
+                                                "zsh/zsh-syntax-highlighting"
                                                 ))
 
 ;; So that helm does not use current window to display the helm window

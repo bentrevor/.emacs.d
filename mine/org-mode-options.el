@@ -56,6 +56,8 @@
                            (defun org-journal-entry ()
                              (interactive)
                              (end-of-buffer)
+                             (insert "\n\n")
+                             (delete-blank-lines)
                              (insert "\n** ")
 
                              (setq current-prefix-arg '(16))      ; C-u C-u
