@@ -82,9 +82,16 @@
 
 (defun pbcopy-filename ()
   (interactive)
-  (shell-command-to-string (concat "echo -n " (buffer-file-name) "| pbcopy")))
+  (let ((buffer-name-from-root (replace-regexp-in-string (regexp-quote (projectile-project-root)) "" (buffer-file-name) nil 'literal)))
+    (shell-command-to-string (concat "echo -n " buffer-name-from-root "| pbcopy"))))
 
 (define-key my-keys-minor-mode-map (kbd "C-c y f") 'pbcopy-filename)
+
+(defun pbcopy-full-filename ()
+  (interactive)
+  (shell-command-to-string (concat "echo -n " (buffer-file-name) "| pbcopy")))
+
+(define-key my-keys-minor-mode-map (kbd "C-c y F") 'pbcopy-full-filename)
 
 (defun pbcopy-rspec-it ()
   (interactive)

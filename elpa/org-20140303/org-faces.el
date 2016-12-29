@@ -635,8 +635,8 @@ belong to the weekend."
   :group 'org-faces)
 
 (defface org-agenda-dimmed-todo-face
-  '((((background light)) (:foreground "grey50"))
-    (((background dark)) (:foreground "grey50")))
+  '((((background light)) (:foreground "grey90"))
+    (((background dark)) (:foreground "grey90")))
   "Face used to dim blocked tasks in the agenda."
   :group 'org-faces)
 

@@ -48,10 +48,11 @@
 (setq-default comment-column 0)                         ;; stop moving comments to the right
 (column-number-mode t)                                  ;; show column number
 (set-default 'truncate-lines t)                         ;; disable word wrap
-;; (setq ruby-deep-indent-paren nil)                       ;; better indentation for multiline hashes in ruby
+;; (setq ruby-deep-indent-paren nil)                    ;; better indentation for multiline hashes in ruby
 (winner-mode 1)                                         ;; undo/redo split layout changes
 (setq echo-keystrokes 0.001)                            ;; like vim's showcmd
 (setq require-final-newline nil)                        ;; don't add newline at end of file
+(setq mode-require-final-newline nil)                   ;; don't add newline at end of file
 
 ;;;;;;;;;;;;;;;
 ;;

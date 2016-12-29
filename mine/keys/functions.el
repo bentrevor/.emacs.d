@@ -34,6 +34,22 @@
   (insert (chomp-end (concat (shell-command-to-string command))))
   )
 
+(defun open-in-github ()
+  (interactive)
+  (browse-url (replace-regexp-in-string "/Users/trevorb/code/appserver" "https://github.com/BLC/rails/blob/master" (buffer-file-name))))
+
+(defun org-subtree-in-new-file ()
+  (interactive)
+  (let ((timestamp (concat (number-to-string (cadr (current-time)))
+                           (number-to-string (caddr (current-time)))
+                           )))
+    (org-copy-subtree)
+    (find-file (concat "tmp-" timestamp ".org"))
+    (yank)
+    (delete-other-windows)
+    )
+  )
+
 (define-key my-keys-minor-mode-map (kbd "C-\\")      'insert-shell-command)
 
 ;; need this so redo can work
@@ -44,6 +60,7 @@
 
 (define-key my-keys-minor-mode-map (kbd "C-w")       'backward-kill-word)
 (define-key helm-map               (kbd "C-w")       'backward-kill-word)
+(define-key helm-map               (kbd "ESC M-h")   'helm-help)
 
 (define-key my-keys-minor-mode-map (kbd "C-v")       'whole-line-or-region-kill-region)
 (define-key my-keys-minor-mode-map (kbd "M-v")       'whole-line-or-region-kill-ring-save)
@@ -51,8 +68,15 @@
 (define-key my-keys-minor-mode-map (kbd "M-x")       'helm-M-x)
 (define-key my-keys-minor-mode-map (kbd "ESC M-x")   'execute-extended-command) ;; original M-x
 
+(define-key key-translation-map (kbd "M-h") [f1])
+
+(define-key my-keys-minor-mode-map (kbd "M-a")       'back-to-indentation)
+(define-key my-keys-minor-mode-map (kbd "M-e")       'move-end-of-line)
+(define-key my-keys-minor-mode-map (kbd "M-m")       'mark-paragraph)
+;; (define-key my-keys-minor-mode-map (kbd "M-p")       'mark-paragraph)
+
+
 ;; C-x
-(define-key my-keys-minor-mode-map (kbd "C-x d k")   'describe-key)
 (define-key my-keys-minor-mode-map (kbd "C-x f")     'helm-projectile-find-file)
 (define-key my-keys-minor-mode-map (kbd "C-x C-f")   'helm-projectile-find-file)
 (define-key my-keys-minor-mode-map (kbd "C-x M-f")   'find-file)
@@ -95,20 +119,34 @@
 (define-key my-keys-minor-mode-map (kbd "C-x C-l")   'windmove-right)
 
 ;; other
-(define-key my-keys-minor-mode-map (kbd "C-x g i t")     'magit-status)
-(define-key my-keys-minor-mode-map (kbd "C-x g h")     'open-in-github)
+;; (define-key my-keys-minor-mode-map (kbd "C-x g i t") 'magit-status)
+(define-key my-keys-minor-mode-map (kbd "C-x g h")   'open-in-github)
 (define-key my-keys-minor-mode-map (kbd "<backtab>") 'hippie-expand)
 (define-key my-keys-minor-mode-map (kbd "M-;")       'whole-line-or-region-comment-dwim)
 (define-key my-keys-minor-mode-map (kbd "C-x u")     'browse-url-at-point)
-
-;; s == scroll
-(smartrep-define-key
-    my-keys-minor-mode-map "C-c s" '(("n" . 'scroll-up-line)
-                                     ("p" . 'scroll-down-line)
-                                     ))
 
 ;; yank without auto-indentation
 (define-key my-keys-minor-mode-map (kbd "M-C-y") 'yank)
 
 ;; yank-and-indent is annoying in haskell
 (add-hook 'haskell-mode-hook (lambda () (define-key my-keys-minor-mode-map (kbd "C-y") 'yank)))
+
+(require 'hideshow)
+(require 'sgml-mode)
+(require 'nxml-mode)
+
+(add-to-list 'hs-special-modes-alist
+             '(nxml-mode
+               "<!--\\|<[^/>]*[^/]>"
+               "-->\\|</[^/>]*[^/]>"
+
+               "<!--"
+               sgml-skip-tag-forward
+               nil))
+
+
+
+(add-hook 'nxml-mode-hook 'hs-minor-mode)
+
+;; optional key bindings, easier than hs defaults
+(define-key nxml-mode-map (kbd "C-c h") 'hs-toggle-hiding)

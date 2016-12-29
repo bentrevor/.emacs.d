@@ -2,7 +2,7 @@
 (defvar my-keys-minor-mode-map (make-keymap) "my-keys-minor-mode keymap.")
 
 (load "~/.emacs.d/mine/keys/aliases.el")
-(load "~/.emacs.d/mine/keys/builtins.el")
+(load "~/.emacs.d/mine/keys/functions.el")
 (load "~/.emacs.d/mine/keys/erc.el")
 (load "~/.emacs.d/mine/keys/lisp.el")
 (load "~/.emacs.d/mine/keys/vim.el")
