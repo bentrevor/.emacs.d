@@ -59,8 +59,6 @@
 (define-key my-keys-minor-mode-map (kbd "M-.")       'end-of-buffer)
 
 (define-key my-keys-minor-mode-map (kbd "C-w")       'backward-kill-word)
-(define-key helm-map               (kbd "C-w")       'backward-kill-word)
-(define-key helm-map               (kbd "ESC M-h")   'helm-help)
 
 (define-key my-keys-minor-mode-map (kbd "C-v")       'whole-line-or-region-kill-region)
 (define-key my-keys-minor-mode-map (kbd "M-v")       'whole-line-or-region-kill-ring-save)
@@ -72,9 +70,7 @@
 
 (define-key my-keys-minor-mode-map (kbd "M-a")       'back-to-indentation)
 (define-key my-keys-minor-mode-map (kbd "M-e")       'move-end-of-line)
-(define-key my-keys-minor-mode-map (kbd "M-m")       'mark-paragraph)
-;; (define-key my-keys-minor-mode-map (kbd "M-p")       'mark-paragraph)
-
+(define-key my-keys-minor-mode-map (kbd "M-m")       '(lambda () (interactive) (delete-trailing-whitespace) (mark-paragraph)))
 
 ;; C-x
 (define-key my-keys-minor-mode-map (kbd "C-x f")     'helm-projectile-find-file)
@@ -109,10 +105,10 @@
 (define-key my-keys-minor-mode-map (kbd "C-x q r s")   'query-replace-string)
 
 ;; move cursor between windows
-(define-key my-keys-minor-mode-map (kbd "C-x h")     'windmove-left)
-(define-key my-keys-minor-mode-map (kbd "C-x j")     'windmove-down)
-(define-key my-keys-minor-mode-map (kbd "C-x k")     'windmove-up)
-(define-key my-keys-minor-mode-map (kbd "C-x l")     'windmove-right)
+;; (define-key my-keys-minor-mode-map (kbd "C-x h")     'windmove-left)
+;; (define-key my-keys-minor-mode-map (kbd "C-x j")     'windmove-down)
+;; (define-key my-keys-minor-mode-map (kbd "C-x k")     'windmove-up)
+;; (define-key my-keys-minor-mode-map (kbd "C-x l")     'windmove-right)
 (define-key my-keys-minor-mode-map (kbd "C-x C-h")   'windmove-left)
 (define-key my-keys-minor-mode-map (kbd "C-x C-j")   'windmove-down)
 (define-key my-keys-minor-mode-map (kbd "C-x C-k")   'windmove-up)

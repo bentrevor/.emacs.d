@@ -24,6 +24,8 @@
 
 (require 'helm-config)
 (helm-mode 1)
+(define-key helm-map               (kbd "C-w")       'backward-kill-word)
+(define-key helm-map               (kbd "ESC M-h")   'helm-help)
 
 (require 'helm-projectile)
 (helm-projectile-on)

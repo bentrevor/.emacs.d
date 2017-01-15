@@ -10,7 +10,7 @@
 (setq org-time-clocksum-format '(:hours "%d" :require-hours t :minutes ":%02d" :require-minutes t)) ;; format time to not show days in clock tables
 
 (setq org-todo-keywords
-      '((type "TODO" "TRACKER" "|" "LATER" "WONTFIX" "DONE")))
+      '((type "TODO" "TRACKER" "REFILE" "|" "LATER" "WONTFIX" "DONE")))
 
 (add-hook 'org-mode-hook (lambda ()
 
@@ -90,6 +90,7 @@
 
                            (global-set-key (kbd "C-c c i") 'org-clock-in)
                            (global-set-key (kbd "C-c c o") 'org-clock-out)
+                           (global-set-key (kbd "C-c c g") 'org-clock-goto)
 
                            ;; (smartrep-define-key
                            ;;     my-keys-minor-mode-map "C-c" '(("t" . 'org-todo)
@@ -133,6 +134,47 @@
                            ;; (global-set-key (kbd "C-c C-o p") 'insert-pivotal-subtree)
 
                            ;; (global-set-key (kbd "C-c C-o l") 'org-todo-list)
+
+                           (defun all-the-way-up ()
+                             (interactive)
+                             (org-metaup)
+                             (org-metaup)
+                             (org-metaup)
+                             (org-metaup)
+                             (org-metaup)
+                             (org-metaup)
+                             (org-metaup)
+                             (org-metaup)
+                             (org-metaup)
+                             (org-metaup)
+                             (org-metaup)
+                             (org-metaup)
+                             (org-metaup)
+                             (org-metaup)
+                             )
+
+                           (defun all-the-way-down ()
+                             (interactive)
+                             (org-metadown)
+                             (org-metadown)
+                             (org-metadown)
+                             (org-metadown)
+                             (org-metadown)
+                             (org-metadown)
+                             (org-metadown)
+                             (org-metadown)
+                             (org-metadown)
+                             (org-metadown)
+                             (org-metadown)
+                             (org-metadown)
+                             (org-metadown)
+                             (org-metadown)
+                             )
+
+                           (global-set-key (kbd "M-n") 'org-metadown)
+                           (global-set-key (kbd "M-p") 'org-metaup)
+                           (global-set-key (kbd "ESC M-n") 'all-the-way-down)
+                           (global-set-key (kbd "ESC M-p") 'all-the-way-up)
 
                            ;; m s == move subtree
                            (smartrep-define-key

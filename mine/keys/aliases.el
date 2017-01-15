@@ -4,3 +4,5 @@
 
 (defalias 'git 'magit-status)
 (defalias 'blame 'magit-blame)
+
+(advice-add 'magit-status :before #'delete-other-windows)
