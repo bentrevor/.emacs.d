@@ -16,6 +16,7 @@
 (define-key my-keys-minor-mode-map (kbd "C-h")       'delete-backward-char)
 
 ;; karabiner remaps vt102 control codes:
+;; C-; to C-\
 ;; C-' to C-\
 ;; C-/ to C-_
 ;; C-, to C-]
@@ -24,7 +25,7 @@
 (define-key my-keys-minor-mode-map (kbd "C-^")       'forward-paragraph)
 
 (defun chomp-end (str)
-  "Chomp tailing whitespace from STR."
+  "Chomp trailing whitespace from STR."
   (replace-regexp-in-string (rx (* (any " \t\n")) eos)
                             ""
                             str))
@@ -69,6 +70,8 @@
 (define-key key-translation-map (kbd "M-h") [f1])
 
 (define-key my-keys-minor-mode-map (kbd "M-a")       'back-to-indentation)
+(add-hook 'org-mode-hook (lambda () (local-unset-key (kbd "M-a"))))
+
 (define-key my-keys-minor-mode-map (kbd "M-e")       'move-end-of-line)
 (define-key my-keys-minor-mode-map (kbd "M-m")       '(lambda () (interactive) (delete-trailing-whitespace) (mark-paragraph)))
 
@@ -97,7 +100,7 @@
 (setq ibuffer-formats
       '((mark modified read-only " "
               (name 30 30 :left :elide) " "
-              (mode 16 16 :left :elide) " " filename-and-process)
+              (mode 6 6 :left :elide) " " filename-and-process)
         (mark " " (name 16 -1) " " filename)))
 
 (define-key my-keys-minor-mode-map (kbd "C-x r s")     'replace-string)

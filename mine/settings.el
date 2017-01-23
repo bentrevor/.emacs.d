@@ -21,6 +21,7 @@
 (add-hook 'js-mode-hook #'linum-mode)
 (add-hook 'html-mode-hook #'linum-mode)
 (add-hook 'yaml-mode-hook #'linum-mode)
+(add-hook 'web-mode-hook #'linum-mode)
 
 
 (setq ruby-insert-encoding-magic-comment nil)

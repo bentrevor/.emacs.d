@@ -12,8 +12,8 @@
 (setq org-todo-keywords
       '((type "TODO" "TRACKER" "REFILE" "|" "LATER" "WONTFIX" "DONE")))
 
-(add-hook 'org-mode-hook (lambda ()
 
+(add-hook 'org-mode-hook (lambda ()
                            (defun nc-org-new-tracker ()
                              (interactive)
                              (end-of-buffer)
@@ -82,27 +82,15 @@
                            ;; (global-set-key (kbd "C-c o a d") (lambda () (interactive) (org-small-agenda-list "DONE")))
 
 
-                           ;; ;; j e == journal entry
-                           (global-set-key (kbd "C-c o j e") 'org-journal-entry)
-                           ;; (global-set-key (kbd "C-c o j u") 'org-update-journal-entry)
+                           (define-prefix-command 'my-org-map)
+                           (global-set-key (kbd "M-o") 'my-org-map)
 
-                           (global-set-key (kbd "C-c i c") (lambda () (interactive) (beginning-of-line) (org-kill-line) (insert "- [ ] ")))
+                           (define-key my-org-map (kbd "j") 'org-journal-entry)
+                           (define-key my-org-map (kbd "i") 'org-clock-in)
+                           (define-key my-org-map (kbd "o") 'org-clock-out)
+                           (define-key my-org-map (kbd "g") 'org-clock-goto)
+                           (define-key my-org-map (kbd "M-a") 'beginning-of-org-line)
 
-                           (global-set-key (kbd "C-c c i") 'org-clock-in)
-                           (global-set-key (kbd "C-c c o") 'org-clock-out)
-                           (global-set-key (kbd "C-c c g") 'org-clock-goto)
-
-                           ;; (smartrep-define-key
-                           ;;     my-keys-minor-mode-map "C-c" '(("t" . 'org-todo)
-                           ;;                                    ("C-n" . 'outline-next-visible-heading)
-                           ;;                                    ("C-p" . 'outline-previous-visible-heading)
-                           ;;                                    ))
-
-
-                           ;; l == link
-                           (global-set-key (kbd "C-c o l c") 'org-store-link) ; copy
-                           (global-set-key (kbd "C-c o l p") 'org-insert-link) ; paste
-                           (global-set-key (kbd "C-c o l f") 'org-open-at-point) ; follow
 
                            (defun beginning-of-org-line ()
                              (interactive)
@@ -129,56 +117,27 @@
                              (forward-char)
                              )
 
-
-                           ;; (global-set-key (kbd "C-c o p") 'insert-pivotal-subtree)
-                           ;; (global-set-key (kbd "C-c C-o p") 'insert-pivotal-subtree)
-
-                           ;; (global-set-key (kbd "C-c C-o l") 'org-todo-list)
+                           (defun all-the-way-down ()
+                             (interactive)
+                             (dotimes (n 10 r)
+                               (org-metadown)))
 
                            (defun all-the-way-up ()
                              (interactive)
-                             (org-metaup)
-                             (org-metaup)
-                             (org-metaup)
-                             (org-metaup)
-                             (org-metaup)
-                             (org-metaup)
-                             (org-metaup)
-                             (org-metaup)
-                             (org-metaup)
-                             (org-metaup)
-                             (org-metaup)
-                             (org-metaup)
-                             (org-metaup)
-                             (org-metaup)
-                             )
-
-                           (defun all-the-way-down ()
-                             (interactive)
-                             (org-metadown)
-                             (org-metadown)
-                             (org-metadown)
-                             (org-metadown)
-                             (org-metadown)
-                             (org-metadown)
-                             (org-metadown)
-                             (org-metadown)
-                             (org-metadown)
-                             (org-metadown)
-                             (org-metadown)
-                             (org-metadown)
-                             (org-metadown)
-                             (org-metadown)
-                             )
+                             (dotimes (n 10 r)
+                               (org-metaup)))
 
                            (global-set-key (kbd "M-n") 'org-metadown)
                            (global-set-key (kbd "M-p") 'org-metaup)
                            (global-set-key (kbd "ESC M-n") 'all-the-way-down)
                            (global-set-key (kbd "ESC M-p") 'all-the-way-up)
 
-                           ;; m s == move subtree
+                           (global-set-key (kbd ";") 'all-the-way-up)
+                           (global-set-key (kbd "C-\\") (lambda () (interactive) (insert ";")))
+
+                           ;; M-m == move
                            (smartrep-define-key
-                               my-keys-minor-mode-map "C-c o s" '(("b" . 'org-promote-subtree)
+                               my-keys-minor-mode-map "M-o M-m" '(("b" . 'org-promote-subtree)
                                                                   ("f" . 'org-demote-subtree)
                                                                   ("p" . 'org-metaup)
                                                                   ("n" . 'org-metadown)
@@ -186,6 +145,7 @@
                                                                   ("d" . (lambda () (interactive) (org-todo "DONE")))
                                                                   ("l" . (lambda () (interactive) (org-todo "LATER")))
                                                                   ("w" . (lambda () (interactive) (org-todo "WONTFIX")))
+                                                                  ;; (" " . (lambda () (interactive) (org-todo "")))
                                                                   ("C-n" . 'next-line)
                                                                   ("C-p" . 'previous-line)
                                                                   ("C-v" . 'org-cut-subtree)
@@ -194,13 +154,15 @@
                                                                   ("a" . 'org-archive-subtree)
                                                                   ))
 
-                           ;; n == navigate
+                           ;; M-n == navigate
                            (smartrep-define-key
-                               my-keys-minor-mode-map "C-c o n" '(("b" . 'org-backward-heading-same-level)
+                               my-keys-minor-mode-map "M-o M-n" '(("b" . 'org-backward-heading-same-level)
                                                                   ("f" . 'org-forward-heading-same-level)
                                                                   ("u" . 'outline-up-heading)
-                                                                  ("p" . 'outline-previous-visible-heading)
-                                                                  ("n" . 'outline-next-visible-heading)
+                                                                  ("p" . 'org-previous-visible-heading)
+                                                                  ("n" . 'org-next-visible-heading)
+                                                                  ("t" . (lambda () (interactive) (org-todo "TODO")))
+                                                                  ("d" . (lambda () (interactive) (org-todo "DONE")))
                                                                   ("C-b" . 'backward-char)
                                                                   ("C-f" . 'forward-char)
                                                                   ("C-n" . 'next-line)
@@ -208,14 +170,14 @@
 
                            ;; d == date
                            (smartrep-define-key
-                               my-keys-minor-mode-map "C-c o d" '(("b" . 'org-timestamp-down-day)
-                                                                  ("f" . 'org-timestamp-up-day)
-                                                                  ("p" . 'org-timestamp-up)
-                                                                  ("n" . 'org-timestamp-down)
-                                                                  ("m" . 'org-date-change-minutes)
-                                                                  ("h" . 'org-date-change-hours)
-                                                                  ("C-f" . 'forward-char)
-                                                                  ("C-b" . 'backward-char)))
+                               my-keys-minor-mode-map "M-o d" '(("b" . 'org-timestamp-down-day)
+                                                                ("f" . 'org-timestamp-up-day)
+                                                                ("p" . 'org-timestamp-up)
+                                                                ("n" . 'org-timestamp-down)
+                                                                ("m" . 'org-date-change-minutes)
+                                                                ("h" . 'org-date-change-hours)
+                                                                ("C-f" . 'forward-char)
+                                                                ("C-b" . 'backward-char)))
 
                            (add-hook 'before-save-hook 'org-align-all-tags)
                            ;; not sure if this is working...

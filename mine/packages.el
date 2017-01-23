@@ -10,6 +10,7 @@
 (add-to-list 'auto-mode-alist '("Guardfile$" . ruby-mode))
 (add-to-list 'auto-mode-alist '("Vagrantfile$" . ruby-mode))
 
+(add-to-list 'auto-mode-alist '("\\.erb$" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.jsx$" . web-mode))
 (setq web-mode-markup-indent-offset 2) ;; html indent
 (setq web-mode-code-indent-offset 2) ;; js indent
