@@ -1,0 +1,82 @@
+### ZSH settings ###
+ZSH_THEME="norm"
+COMPLETION_WAITING_DOTS="true"
+
+### Completion ###
+fpath=(~/.zsh/completion $fpath) # add custom completion to fpath
+setopt COMPLETE_IN_WORD
+autoload -U compinit
+compinit
+zstyle ':completion::complete:*' use-cache 1
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}' # case insensitive completion
+zstyle ':completion:*:default' menu 'select=0'      # menu-style
+
+### Colors ###
+export CLICOLOR=1
+autoload colors
+colors
+
+### History ###
+export HISTFILE=$HOME/.zsh_history
+export HISTSIZE=10000
+export SAVEHIST=10000
+setopt EXTENDED_HISTORY     # add timestamps to history
+setopt APPEND_HISTORY       # adds history
+setopt INC_APPEND_HISTORY   # adds history incrementally
+setopt SHARE_HISTORY        # share across sessions
+setopt HIST_IGNORE_ALL_DUPS # don't record dupes in history
+setopt HIST_IGNORE_DUPS
+setopt HIST_REDUCE_BLANKS
+
+### more ZSH settings ###
+unsetopt correct_all
+bindkey -e                                       # use emacs key bindings
+bindkey '^r' history-incremental-search-backward # make Control-r work
+bindkey '^[[Z' reverse-menu-complete             # shift-tab to cycle backwards
+bindkey "^[[3~" delete-char                      # make delete key work
+bindkey "^[3;5~" delete-char                     # make delete key work
+bindkey '^U' backward-kill-line                  # make Control-u work like bash
+autoload -U select-word-style
+select-word-style bash
+
+setopt LOCAL_OPTIONS # allow functions to have local options
+setopt LOCAL_TRAPS   # allow functions to have local traps
+setopt PROMPT_SUBST
+setopt AUTO_CD
+stty -ixon -ixoff    # disable scroll lock
+export EDITOR=vim
+set -o emacs
+
+source $HOME/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+
+
+if on_osx; then
+    source $(brew --prefix)/etc/profile.d/z.sh
+    _Z_EXCLUDE_DIRS=("$HOME/.gem" "$HOME/.rubies" "$HOME/Library")
+fi
+
+
+### set up session ###
+function global_bins()  { echo '/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin' }
+function gem_bins()     { echo "$GEM_HOME/bin" }
+# function cabal_bins()   { echo "$HOME/.cabal/bin" }
+function go_bins()      { echo "/usr/local/go/bin:$GOPATH/bin" }
+
+export GOPATH=$HOME/go
+export PATH=$(gem_bins):$(global_bins):$(go_bins)
+
+export RAILS_CONSOLE=pry
+
+# to trigger chruby auto when new shell is opened
+# (TODO I can't do it in chruby.sh because the color functions haven't been loaded yet)
+chpwd
+
+export DOCKER_HOST=tcp://192.168.99.100:2376
+export DOCKER_CERT_PATH=/Users/trevorb/.docker/machine/machines/dinghy
+export DOCKER_TLS_VERIFY=1
+export DOCKER_MACHINE_NAME=dinghy
+
+export LAZY=0
+
+ruby $HOME/rubbish/mk_rubbish.rb
+source $HOME/rubbish/rubbish

@@ -154,9 +154,13 @@
                                                                   ("a" . 'org-archive-subtree)
                                                                   ))
 
+                           (smartrep-define-key
+                               my-keys-minor-mode-map "M-o M-o" '(("b" . 'org-backward-heading-same-level)))
+
                            ;; M-n == navigate
                            (smartrep-define-key
-                               my-keys-minor-mode-map "M-o M-n" '(("b" . 'org-backward-heading-same-level)
+                               my-keys-minor-mode-map "M-o M-n" '(
+                                                                  ("b" . 'org-backward-heading-same-level)
                                                                   ("f" . 'org-forward-heading-same-level)
                                                                   ("u" . 'outline-up-heading)
                                                                   ("p" . 'org-previous-visible-heading)
@@ -166,7 +170,8 @@
                                                                   ("C-b" . 'backward-char)
                                                                   ("C-f" . 'forward-char)
                                                                   ("C-n" . 'next-line)
-                                                                  ("C-p" . 'previous-line)))
+                                                                  ("C-p" . 'previous-line)
+                                                                  ))
 
                            ;; d == date
                            (smartrep-define-key
